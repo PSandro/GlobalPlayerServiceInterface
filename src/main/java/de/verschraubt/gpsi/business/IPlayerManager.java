@@ -11,10 +11,15 @@ import java.util.UUID;
  */
 public interface IPlayerManager {
 
-    StoredPlayer getPlayer(UUID playerUniqueId) throws PlayerNotFoundException;
+    enum StoreType {
+        CACHE,
+        SQL;
+    }
 
-    void storePlayer(StoredPlayer storedPlayer);
+    StoredPlayer getPlayer(UUID playerUniqueId, StoreType storeType) throws PlayerNotFoundException;
 
-    boolean isPresent(UUID playerUniqueId);
+    void storePlayer(StoredPlayer storedPlayer, StoreType storeType);
+
+    boolean isPresent(UUID playerUniqueId, StoreType storeType);
 
 }
