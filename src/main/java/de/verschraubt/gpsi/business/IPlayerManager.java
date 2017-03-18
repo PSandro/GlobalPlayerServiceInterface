@@ -1,4 +1,4 @@
-package de.verschraubt.gpsi.protocol;
+package de.verschraubt.gpsi.business;
 
 
 import de.verschraubt.gpsi.player.StoredPlayer;

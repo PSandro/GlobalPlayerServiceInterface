@@ -1,4 +1,4 @@
-package de.verschraubt.gpsi.protocol;
+package de.verschraubt.gpsi.business;
 
 import de.verschraubt.gpsi.service.IPlayerService;
 import de.verschraubt.gpsi.protocol.exception.NoServiceAvailableException;
