@@ -8,6 +8,8 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
+import java.util.Optional;
+
 /**
  * Created by Verschraubt on 19.03.2017 for GlobalPlayerServiceInterface.
  */
@@ -67,13 +69,15 @@ public class RedisClient implements ICacheManager, IMessagingManager {
     }
 
     @Override
-    public String get(String set, String key) {
+    public Optional<String> get(String set, String key) {
         Preconditions.checkNotNull(set, "The set name cannot be null");
         Preconditions.checkNotNull(key, "The key cannot be null");
 
         try (Jedis jedis = this.jedisPool.getResource();) {
             synchronized (lock) {
-                return jedis.hget(set, key);
+                String answer = jedis.hget(set, key);
+                if ("nil".equalsIgnoreCase(answer) || answer == null) return Optional.empty();
+                return Optional.of(answer);
             }
         }
     }
@@ -86,6 +90,43 @@ public class RedisClient implements ICacheManager, IMessagingManager {
         try (Jedis jedis = this.jedisPool.getResource();) {
             synchronized (lock) {
                 jedis.hdel(set, key);
+            }
+        }
+    }
+
+    @Override
+    public void setAdd(String name, String... values) {
+        Preconditions.checkNotNull(name, "The name cannot be null");
+        Preconditions.checkNotNull(values, "The values cannot be null");
+
+        try (Jedis jedis = this.jedisPool.getResource();) {
+            synchronized (lock) {
+                jedis.sadd(name, values);
+            }
+        }
+    }
+
+    @Override
+    public void setRemove(String name, String... values) {
+        Preconditions.checkNotNull(name, "The name cannot be null");
+        Preconditions.checkNotNull(values, "The values cannot be null");
+
+        try (Jedis jedis = this.jedisPool.getResource();) {
+            synchronized (lock) {
+                jedis.srem(name, values);
+            }
+        }
+    }
+
+    @Override
+    public Optional<String> setRandomMember(String name) {
+        Preconditions.checkNotNull(name, "The name cannot be null");
+
+        try (Jedis jedis = this.jedisPool.getResource();) {
+            synchronized (lock) {
+                String result = jedis.srandmember(name);
+                if ("nil".equalsIgnoreCase(result) || result == null) return Optional.empty();
+                return Optional.of(result);
             }
         }
     }

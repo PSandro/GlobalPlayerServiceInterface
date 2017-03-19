@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
  * Created by Verschraubt on 13.03.2017 for GlobalPlayerServiceInterface.
  */
 public class PlayerServiceSet {
-    private final Map<Class<? extends IPlayerService>, LinkedPlayerService> services = new HashMap<>();
+    private final Map<Class<? extends PlayerService>, LinkedPlayerService> services = new HashMap<>();
 
     public PlayerServiceSet() {
     }
 
-    private void setUnlinkedService(Class<? extends IPlayerService>... playerServiceType) {
+    private void setUnlinkedService(Class<? extends PlayerService>... playerServiceType) {
         Preconditions.checkNotNull(playerServiceType, "The playerServiceType cannot be null");
-        for (Class<? extends IPlayerService> playerService : playerServiceType) {
+        for (Class<? extends PlayerService> playerService : playerServiceType) {
             this.services.put(playerService, null);
         }
     }
@@ -31,7 +31,7 @@ public class PlayerServiceSet {
         }
     }
 
-    public IPlayerService getLinkedService(Class<? extends LinkedPlayerService> type) throws NoServiceSetException {
+    public PlayerService getLinkedService(Class<? extends LinkedPlayerService> type) throws NoServiceSetException {
         if (!this.services.containsKey(type) || this.services.get(type) == null) throw new NoServiceSetException(type);
         return this.services.get(type);
     }
@@ -44,7 +44,7 @@ public class PlayerServiceSet {
         return this.services.size();
     }
 
-    public Set<Class<? extends IPlayerService>> getUnlinkedServiceClasses() {
+    public Set<Class<? extends PlayerService>> getUnlinkedServiceClasses() {
         return this.services.entrySet().stream().map(Map.Entry::getKey).filter(clazz -> !LinkedPlayerService.class.isAssignableFrom(clazz)).collect(Collectors.toSet());
     }
 }

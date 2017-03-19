@@ -1,12 +1,12 @@
 package de.verschraubt.gpsi.player;
 
 import com.google.common.base.Preconditions;
-import de.verschraubt.gpsi.business.IServiceManager;
 import de.verschraubt.gpsi.protocol.exception.NoServiceAvailableException;
-import de.verschraubt.gpsi.service.IPlayerService;
+import de.verschraubt.gpsi.service.IServiceManager;
 import de.verschraubt.gpsi.service.LinkedPlayerService;
-import de.verschraubt.gpsi.service.exception.NoServiceSetException;
+import de.verschraubt.gpsi.service.PlayerService;
 import de.verschraubt.gpsi.service.PlayerServiceSet;
+import de.verschraubt.gpsi.service.exception.NoServiceSetException;
 
 /**
  * Created by Verschraubt on 09.03.2017 for GlobalPlayerServiceInterface.
@@ -25,22 +25,22 @@ public final class GlobalPlayer extends StoredPlayer {
         this.playerServiceSet = playerServiceSet;
     }
 
-    public void setRank(PlayerRank playerRank) throws NoServiceSetException, NoServiceAvailableException {
+    public void setRank(PlayerRank playerRank) throws NoServiceSetException, NoServiceAvailableException, ReflectiveOperationException {
         Preconditions.checkNotNull(playerRank, "The playerRank cannot be null");
         if (this.playerServiceSet.getServiceCount() == 0)
             throw new NoServiceSetException(this);
         this.playerServiceSet.getLinkedServices().forEach(service -> service.setRank(this, playerRank));
-        for (Class<? extends IPlayerService> playerServiceType : this.playerServiceSet.getUnlinkedServiceClasses()) {
+        for (Class<? extends PlayerService> playerServiceType : this.playerServiceSet.getUnlinkedServiceClasses()) {
             this.serviceManager.fetchService(playerServiceType).setRank(this, playerRank);
         }
     }
 
-    public IPlayerService getService(Class<? extends IPlayerService> playerServiceType) throws NoServiceSetException, NoServiceAvailableException {
+    public PlayerService getService(Class<? extends PlayerService> playerServiceType) throws NoServiceSetException, NoServiceAvailableException, ReflectiveOperationException {
         Preconditions.checkNotNull(playerServiceType, "The playerServiceType cannot be null");
 
-        if (!playerServiceType.isAssignableFrom(IPlayerService.class)) {
+        if (!playerServiceType.isAssignableFrom(PlayerService.class)) {
             //Wenn linkedService
-            IPlayerService playerService;
+            PlayerService playerService;
             if ((playerService = this.playerServiceSet.getLinkedService((Class<? extends LinkedPlayerService>) playerServiceType)) != null)
                 return playerService;
             throw new NoServiceSetException(this);

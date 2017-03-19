@@ -1,7 +1,6 @@
-package de.verschraubt.gpsi.business;
+package de.verschraubt.gpsi.player;
 
 
-import de.verschraubt.gpsi.player.StoredPlayer;
 import de.verschraubt.gpsi.protocol.exception.PlayerNotFoundException;
 
 import java.util.UUID;
