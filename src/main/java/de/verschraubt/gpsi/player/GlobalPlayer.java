@@ -1,7 +1,7 @@
 package de.verschraubt.gpsi.player;
 
 import com.google.common.base.Preconditions;
-import de.verschraubt.gpsi.protocol.IServiceManager;
+import de.verschraubt.gpsi.business.IServiceManager;
 import de.verschraubt.gpsi.protocol.exception.NoServiceAvailableException;
 import de.verschraubt.gpsi.service.IPlayerService;
 import de.verschraubt.gpsi.service.LinkedPlayerService;
