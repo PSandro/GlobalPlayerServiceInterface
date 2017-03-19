@@ -43,7 +43,7 @@ public abstract class ServiceProtocol {
         return receiverServiceId;
     }
 
-    public abstract void handle(JSONObject data);
+    public abstract ServiceProtocol handle(JSONObject data);
 
     @Override
     public boolean equals(Object o) {
